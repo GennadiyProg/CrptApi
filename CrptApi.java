@@ -3,7 +3,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -59,14 +58,14 @@ public class CrptApi {
 
         try {
             String jsonDocument = objectMapper.writeValueAsString(document);
-            String requestBody = objectMapper.writeValueAsString(jsonDocument);
+            String token = getValidAuthToken(signature);
 
             HttpResponse<String> response = httpClient.send(
                     HttpRequest.newBuilder()
                             .uri(URI.create(baseUrl + CREATE_DOC_URL))
                             .header(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON)
-                            .header(HEADER_AUTHORIZATION, BEARER_PREFIX + getValidAuthToken(signature))
-                            .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                            .header(HEADER_AUTHORIZATION, BEARER_PREFIX + token)
+                            .POST(HttpRequest.BodyPublishers.ofString(jsonDocument))
                             .build(),
                     HttpResponse.BodyHandlers.ofString());
 
